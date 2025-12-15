@@ -40,6 +40,22 @@ Backpropagation is the process of sending error signals backward through the net
 - Bridge theory with practice by translating equations into working code.  
 - Build confidence for teaching, interviews, and further research in machine learning.  
 
+## Results
+Training the MLP on the MNIST dataset produced clear improvements over time. The charts below summarize the learning process:
+- **Loss curves**: Training and validation loss steadily decrease, showing the network is learning meaningful patterns.  
+- **Accuracy curves**: Both training and validation accuracy rise toward ~98%, demonstrating strong generalization on unseen data.  
+- **Confusion matrix**: Most digits are classified correctly, with only minor confusion between visually similar digits (e.g., 4 vs. 9).
+
+### Visualizations
+![Loss Curves](images/loss_curves.png)  
+*Training vs. validation loss over epochs.*
+
+![Accuracy Curves](images/accuracy_curves.png)  
+*Training vs. validation accuracy.*
+
+![Confusion Matrix](images/confusion_matrix.png)  
+*Performance breakdown across all digit classes.*
+
 ## Design Choices: Activation & Loss Functions
 
 ### Why ReLU over Sigmoid?
@@ -50,6 +66,7 @@ Backpropagation is the process of sending error signals backward through the net
 - **Softmax for classification**: In the output layer, softmax converts raw scores into probabilities across classes (0–9 for MNIST). This not only identifies the most likely class but also provides insight into the relative confidence for other classes.  
 - **Cross-Entropy loss**: Cross-entropy directly measures the difference between predicted probability distributions and the true labels. It penalizes incorrect confident predictions more strongly, making training smoother and faster.  
 - **Why not MSE?** Mean Squared Error is better suited for regression tasks. In classification, MSE can lead to slower training and less stable gradients because it doesn’t align naturally with probability outputs.  
+
 
 ### Summary
 - **ReLU** → mitigates vanishing gradients, faster training.  
