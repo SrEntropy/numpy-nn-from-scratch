@@ -38,27 +38,37 @@ class MyMLP:
         self.mW3 = np.zeros_like(self.W3); self.vW3 = np.zeros_like(self.W3)
         self.mb3 = np.zeros_like(self.b3); self.vb3 = np.zeros_like(self.b3)
 
-    # Activation functions
+    # Activation function for hidden layers
+    #reLu grows linearly for positive values and zero out negative values.
     def relu(self, z): return np.maximum(0, z)
     def derivative_relu(self, z): return (z > 0).astype(float)
+    # 
     def sigmoid(self, z): return 1 / (1 + np.exp(-z))
     def derivative_sigmoid(self, a): return a * (1 - a)
-
+    
+    #Activation for output layer
+    #softmax converts row values into distrubition probabilities across classes.
     def softmax(self, z):
         exp_z = np.exp(z - np.max(z, axis=1, keepdims=True))
         return exp_z / np.sum(exp_z, axis=1, keepdims=True)
 
     # Forward pass
     def feedforward(self, X):
+        #L-1:pre-activation: z=xW1+b1
         z1 = np.dot(X, self.W1) + self.b1
+        #activation(z1)
         a1 = self.relu(z1) if self.activation == "relu" else self.sigmoid(z1)
-
+        
+        #L-2:pre-activation z2=a1W2+b2
         z2 = np.dot(a1, self.W2) + self.b2
+        #activation(z2)
         a2 = self.relu(z2) if self.activation == "relu" else self.sigmoid(z2)
-
+        
+        #L-3:pre-actiavtion z3=a2W3+b3
         z3 = np.dot(a2, self.W3) + self.b3
+        #output-activation(z3)
         a3 = self.softmax(z3)
-
+        
         return z1, a1, z2, a2, z3, a3
 
     # Cross-entropy loss
@@ -68,7 +78,10 @@ class MyMLP:
 
     # Backpropagation
     def backProp(self, X, y, z1, a1, z2, a2, z3, a3):
+        #Propagating loss back to hidden layer with respect to the weight in each layer
         m = X.shape[0]
+        #bug..................................................
+        #TODO: Cross-entropy not MSE
         delta3 = (a3 - y) / m
         d_W3 = np.dot(a2.T, delta3)
         d_b3 = np.sum(delta3, axis=0, keepdims=True)
@@ -134,21 +147,22 @@ dataset = load_dataset("ylecun/mnist")
 
 display(dataset)
 
-"""##Visualizing the first 25 images of the trainig data"""
-
+"""Visualizing the first 25 images of the trainig data"""
 fig, axes = plt.subplots(5,5,figsize=(6,6))
 for i, ax in enumerate(axes.flat):
   ax.imshow(dataset["train"][i]["image"], cmap = "gray")
   ax.set_title(dataset["train"][i]["label"])
   ax.axis("off")
 
-#Flatten and Normalize image
+"""Flatten and Normalize image"""
 X_train = np.array([np.array(img["image"]).flatten() for img in dataset["train"]])/225.0
 y_train = np.array([img["label"] for img in dataset["train"]])
 
 X_test = np.array([np.array(img["image"]).flatten() for img in dataset["test"]])/225.0
 y_test = np.array([img["label"] for img in dataset["test"]])
 
+
+"""Preparing mnist dataset for training and testing"""
 from sklearn.model_selection import train_test_split
 # Split into training and validation sets (80% train, 20% val)
 X_train, X_val, y_train, y_val = train_test_split(
