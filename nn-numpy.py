@@ -2,27 +2,31 @@
 
 import numpy as np
 from datasets import load_dataset
-
 import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 
-import numpy as np
 
 class MyMLP:
     def __init__(self, input_len=784, hLayer1_len=256, hLayer2_len=256, output_len=10,
                  learning_rate=0.001, seed=42, activation="relu",
                  beta1=0.9, beta2=0.999, eps=1e-8):
+        #seed to ensure random generation is reproducible
         np.random.seed(seed)
         # Random initialization of Weights and biases
+        #Layer-1
         self.W1 = np.random.randn(input_len, hLayer1_len) * 0.01
         self.b1 = np.zeros((1, hLayer1_len))
+        #Layer-1
         self.W2 = np.random.randn(hLayer1_len, hLayer2_len) * 0.01
         self.b2 = np.zeros((1, hLayer2_len))
+        #Layer-1
         self.W3 = np.random.randn(hLayer2_len, output_len) * 0.01
         self.b3 = np.zeros((1, output_len))
-
+        #Activation function
         self.activation = activation
+        #Learning rate
         self.lr = learning_rate
+        
         self.beta1, self.beta2, self.eps = beta1, beta2, eps
         self.t = 0  # timestep for Adam
 
